@@ -1,4 +1,4 @@
-## Learning a Probabilistic Latent of Object Shapes via 3D Generative-Adversarial Modeling
+## Learning a Probabilistic Latent of Object Shapes via 3D Generative-Adversarial Modeling - Jan 2017
 
 ### Abstract
 
@@ -51,8 +51,8 @@ varied and realistic 3D modeling
 
 #### New Unknown Concepts
 
-- [ ] traditional heuristic criteria
-- [ ] binary cross entropy
+- [x] traditional heuristic criteria
+- [x] binary cross entropy
 
 
 
