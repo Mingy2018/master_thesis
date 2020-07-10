@@ -47,11 +47,7 @@ joint object representation(feature)
 - [ ] freezing the layers
 - [ ] discriminatively trained CNN
 
-#### New Unknown Concepts
-
-
-
-#### References
+#### 
 
 
 
