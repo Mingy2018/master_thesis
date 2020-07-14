@@ -18,6 +18,10 @@ varied and realistic 3D modeling
 
 ### Method
 
+- different Representation
+  - generative
+  - discriminative
+
 * 3D Generative Adversarial Network (3D-GAN)
   * adaptive training strategy: update the discriminator selectively:
     make training stable and produce better results
@@ -53,6 +57,7 @@ varied and realistic 3D modeling
 
 - [x] traditional heuristic criteria
 - [x] binary cross entropy
+- [ ] 3.1 the source of latent space **z** 
 
 
 
