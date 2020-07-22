@@ -6,11 +6,11 @@ The paper introduces a novel framework to learn the good representation of objec
 
 ### Research Objective
 
-joint object representation(feature)
+joint object representation(feature vector)
 
 ### Background and Problems
 
-* features generated from CNN: 
+* features generated from **discriminative CNN**: 
   * not incorporate 3D information
   * no strong generative capabilities
 * learn 3D model to images: no offer to the real world information (for interacting)
@@ -22,11 +22,26 @@ joint object representation(feature)
 
 * novel TL framework to join the features from voxels and images
   * autoencoder: learn the 3D voxels
-  * ConvNet: learn the 2D images
+  * discriminatively trained ConvNet: **learn the 2D images into 64D embedding space**
   * Euclidean loss function: Euclidean distance?
 * a series of experiments on the nature of the representation
 
 ### Evaluation
+
+- Dataset:
+  - ShapeNet: Training  with rendered images and voxels
+  - IKEA Dataset: quanlify the performance of the model on natural indoor images
+- Embedding Analysis
+  - Autoencoder vs PCA: AE outperforms with **higher confidence** as well as **fine details**, gets the extent correct
+  - The learned space is smooth: linear interpolation; explore latent space
+  - Understand the embedding space: scaling one feature while keeping others constant (固定变量法) -> consistent effect, semantically meaningful
+  - Reconstruction accuracy: the auto-encoder is worthwhile
+  - class-discriminative despite not being trained or design so
+- Voxel Prediction
+  - model automatically predicts occluded region of the object
+  - directly predict the voxels(not doing joint training) does worse
+- CAD Retrieval
+  - 
 
 
 
@@ -42,12 +57,13 @@ joint object representation(feature)
 
    这两个标准常常是互相冲突的，用于重建3D体素的信息很难从2D图片学习到，之前的方法，常常是基于其中的一个标准进行优化学习。本文提供了一种新的框架，可以基于这两种标准，同时进行优化学习。
 
-2. 
+2. other concepts
 
 - [ ] freezing the layers
-- [ ] discriminatively trained CNN
+- [x] discriminatively trained CNN
+- [ ] cosine distance
 
-#### 
+
 
 
 

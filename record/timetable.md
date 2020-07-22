@@ -9,6 +9,9 @@
 - [ ] Paper review
   - [ ] WGAN-GP
 - [ ] Proposal Writing based on the literature list
+- [ ] Data Augmentation
+  - [ ] images
+  - [ ] voxels
 
 
 
