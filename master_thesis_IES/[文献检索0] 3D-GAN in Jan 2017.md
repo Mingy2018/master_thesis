@@ -1,6 +1,6 @@
+![img](https://raw.githubusercontent.com/Mingy2018/master_thesis/master/pics/paper/1.PNG)
+
 关键词: Probalistic latent space;  3D modeling
-
-
 
 **摘要：**
 
