@@ -12,7 +12,7 @@
 
 作者认为，一个好的3D生成模型需具备的能力是：可以**多变化(highly varied)**和**高保真(realistic)**的构建3D物体。
 
-过去关于3D重建的方法中，很多基于骨架和网格；许多传统方法则是从数据库中已有的例如CAD模型来构建3D物体，它们看起来很真实，但并**不是概念上新颖(not conceptually novel)。**作者应该认为，将已有的部分重新组合不是好的重构。-> not highly varied
+过去关于3D重建的方法中，很多基于骨架和网格；许多传统方法则是从数据库中已有的例如CAD模型来构建3D物体，它们看起来很真实，但并**不是概念上新颖(not conceptually novel)**。作者应该认为，将已有的部分重新组合不是好的重构。-> not highly varied
 
 近来，随着深度学习的发展，有了许多基于**体素(voxels)**3D重建尝试，这是一个挑战性的问题，3D数据维数很多，当前的效果很有前景，但是重建的3D物体经常会缺失、失真。-> not realistic
 
@@ -34,9 +34,7 @@
 
 
 
-<img src="https://raw.githubusercontent.com/Mingy2018/master_thesis/master/pics/paper/3.PNG?token=AJPFENSO6DQLZMP5NFAMJJ27CI6CE" alt="img" style="zoom: 50%;" />c
-
-
+<img src="https://raw.githubusercontent.com/Mingy2018/master_thesis/master/pics/paper/3.PNG?token=AJPFENSO6DQLZMP5NFAMJJ27CI6CE" alt="img" style="zoom: 50%;" />
 
 其中生成器的具体结构如下：判别器的结构和生成器是镜像的，除了其最终输出为一个值(判断input真假情况)。
 
