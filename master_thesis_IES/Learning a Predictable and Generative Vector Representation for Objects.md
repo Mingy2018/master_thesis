@@ -1,4 +1,4 @@
-## Learning a Predictable and Generative Vector Representation for Objects
+## Learning a Predictable and Generative Vector Representation for Objects - Aug 2016
 
 ### Abstract
 

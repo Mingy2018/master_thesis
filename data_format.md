@@ -44,9 +44,16 @@ There is the script which transforms `.obj`  to `.binvox`.
 
 
 
+## Paper data format
 
+1. [Probabilistic Reconstruction Networks for 3D Shape Inference from a Single Image](https://arxiv.org/pdf/1908.07475v1.pdf) - Aug 2019
+   数据集：ShapeNet
 
+   处理方式：直接读取[.binvox](https://github.com/Regenerator/prns/blob/master/process_ShapeNetAll.py) line 70，然后预处理成[ .h5 ](https://github.com/Regenerator/prns/blob/master/process_ShapeNetAll.py)
 
+2. 偶然找到的转换脚本`.mat`和`.binvox`
+
+3. 
 
 
 
