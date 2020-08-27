@@ -80,6 +80,21 @@ VAE assume the $z$  has simple normal distribution. The key is to notice that an
 
   
 
+#### Variational Inference
+
+Variational methods have their origins in the 18th century with the work of Euler, Lagrange, and others on the *calculus of variations*. 
+
+*functional:* a mapping that takes a function as the input and that returns the value
+of the functional as the output.
+
+- Example: **Entropy** $H(p)$ which takes a probability distribution $p(x)$ as the input and returns the quantity $H[p] =\int p(x)ln\ p(x)dx$
+
+We can the introduce the concept of a *functional derivative*, which expresses how the value of the functional changes in response to infinitesimal changes to the input function.
+
+
+
+
+
 ### Generative Adversarial Networks
 
 
