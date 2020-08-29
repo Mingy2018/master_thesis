@@ -130,4 +130,40 @@ print(v2)
 
 
 
- 
+ ### 卷积操作
+
+
+
+```python
+# Computes a 3-D convolution given 5-D input and filters tensors.
+tf.nn.conv3d(
+    input,
+    filter,
+    strides,
+    padding,
+    data_format='NDHWC',
+    dilations=[1, 1, 1, 1, 1],
+    name=None
+)
+```
+
+- `input:` [batch, in_depth, in_height, in_width, in_channels]
+  - in_depth=3; 例如序列长度, 
+  - in_channels=2; 每一个帧的通道数
+- `filter:`[filter_depth, filter_height, filter_width, in_channels, out_channels]
+  - filter_depth: 时间维度的跨度
+  - in_channels: 帧通道数，must match between `input` and `filters`.
+  - out_channels: 卷积核个数，输出后每帧的通道数
+
+对应的关系见下方例子，可以好理解一些：
+
+![](https://raw.githubusercontent.com/Mingy2018/Markdown-photoes/master/20200829174828.png)
+
+|                            Input                             |                            Output                            |
+| :----------------------------------------------------------: | :----------------------------------------------------------: |
+| ![](https://raw.githubusercontent.com/Mingy2018/Markdown-photoes/master/20200829175941.png) | ![](https://raw.githubusercontent.com/Mingy2018/Markdown-photoes/master/20200829180136.png) |
+
+计算流程如下：
+
+![](https://raw.githubusercontent.com/Mingy2018/Markdown-photoes/master/20200829203320.png)
+
