@@ -23,6 +23,8 @@ The network is trained to find weights for the encoder and decoder that minimize
 
 *Information Entropy:* $H=-\sum_{i=1}^Np(x_i)\cdot logp(x_i)$
 
+
+
 - [ ] the minimum number of bits it would take us to encode our distribution
 
 - theoretical lower bound of needed bits
