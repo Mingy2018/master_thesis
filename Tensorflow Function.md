@@ -167,3 +167,70 @@ tf.nn.conv3d(
 
 ![](https://raw.githubusercontent.com/Mingy2018/Markdown-photoes/master/20200829203320.png)
 
+### 数据操作
+
+```python
+tf.gather(
+params,
+indices,
+validate_indices=None,
+name=None,
+axis=0
+)
+```
+
+- `params`: input
+- `axis:` 进行操作的维度
+- `indices:` axis维度上想获取的值
+
+
+
+```python
+tf.stack(
+    values, 
+    axis=0, 
+    name='stack'
+)
+```
+
+Packs the list of tensors in `values` into a tensor with rank one higher than each tensor in `values`, by packing them along the `axis` dimension. Given a list of length `N` of tensors of shape `(A, B, C)`;
+
+if `axis == 0` then the `output` tensor will have the shape `(N, A, B, C)`. if `axis == 1` then the `output` tensor will have the shape `(A, N, B, C)`. 
+
+
+
+```python
+tf.maximun(
+x,
+y,
+name=None
+)
+```
+
+Returns the max of x and y elementwisely
+
+
+
+```python
+tf.math.reduce_max(
+    input_tensor, axis=None, keepdims=False, name=None
+)
+```
+
+Reduces `input_tensor` along the dimensions given in `axis`. Unless `keepdims` is true, the rank of the tensor is reduced by 1 for each entry in `axis`. If `keepdims` is true, the reduced dimensions are retained with length 1.
+
+If `axis` is None, all dimensions are reduced, and a tensor with a single element is returned.
+
+
+
+### 层的设计
+
+`tf.layers.dense():`全连接层 相当于添加一个层
+
+- inputs：输入该网络层的数据
+- units：输出的维度大小，改变inputs的最后一维
+
+
+
+###  训练网络
+
