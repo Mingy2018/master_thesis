@@ -67,11 +67,6 @@ def create_subcate_dataset(img_path, model_path, bs, scale, is_train, repeat_siz
         all_ID = all_ID[training_size:]
 
     print 'The number of training models is', len(all_models)
-    # print 'The number of images:',len(all_images)
-    # print 'The number of 3D-models:',len(all_models)
-    # print 'The first element of all_images:', all_images[0]
-    # print 'The first element of 3D-models:', all_models[0]
-
     dataset = tf.data.Dataset.from_tensor_slices((all_images, all_models, all_ID))
     dataset = dataset.shuffle(len(all_models))
     dataset = dataset.map(map_batch)
