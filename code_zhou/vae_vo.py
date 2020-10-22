@@ -142,6 +142,11 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
     # Toal loss
     loss =  alpha_2 * recon_loss + alpha_1 * kl_divergence_vol
 
+    #
+    summary_r_loss=tf.summary.scalar("scalar", recon_loss)
+    summary_kl_div=tf.summary.scalar("scalar", kl_divergence_vol)
+    summary_loss=tf.summary.scalar("scalar",loss)
+
 
     z_vector_v2, _, _ = voxel_var_encoder(vol_tensor_2, phase_train=False, reuse=True)
     z_vector_v2 = tf.maximum(tf.minimum(z_vector_v2, 0.99), -0.99)
@@ -151,7 +156,9 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
 
     optimizer_op_ae = tf.train.AdamOptimizer(learning_rate=ae_lr, beta1=beta).minimize(loss, var_list=para_ae)
     saver = tf.train.Saver()
-    vis = visdom.Visdom()
+
+    # online viewer
+    # vis = visdom.Visdom()
 
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
@@ -179,10 +186,16 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
             model_matrix = dataset.modelpath2matrix(batch[1])
             model_matrix = tf.expand_dims(model_matrix, -1)
 
+            d_summary_merge = tf.summary.merge([summary_r_loss,
+                                                summary_kl_div,
+                                                summary_loss])
+            # print out the loss value-----------------------------------
+
             _, loss_1, reconstruction_loss_1, kl_divergence_1 = sess.run([optimizer_op_ae, loss, recon_loss, kl_divergence_vol],feed_dict={vol_tensor_1: model_matrix.eval()})
-            print 'VAE Training ', "epoch: ", epoch, ', reconstruction_loss:', reconstruction_loss_1
-            print 'VAE Training ', "epoch: ", epoch, ', kl_loss:', kl_divergence_1
-            print 'VAE Training ', "epoch: ", epoch, ', Total_loss:', loss_1
+            # print 'VAE Training ', "epoch: ", epoch, ', reconstruction_loss:', reconstruction_loss_1
+            # print 'VAE Training ', "epoch: ", epoch, ', kl_loss:', kl_divergence_1
+            # print 'VAE Training ', "epoch: ", epoch, ', Total_loss:', loss_1
+            # ------------------------------------------------------------
 
             # output generated chairs
             if ((epoch % 100 == 0) and (epoch <= 3200)) or ((epoch % 200 == 0) and (epoch > 3200)):

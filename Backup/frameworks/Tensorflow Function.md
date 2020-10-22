@@ -1,6 +1,6 @@
+
+
 ## Tensorflow Function
-
-
 
 ### 数据读入
 
@@ -63,15 +63,9 @@ with tf.Session() as sess:
     print(sess.run(el)) # output: [ 0.42116176  0.40666069]
 ```
 
-
-
-
-
-
-
 `tf.Session.run(self, fetches, feed_dict=None, options=None, run_metadata=None)`:  启动对所需要的数据流图的计算
 
-- `fetches` ”取得之物“，表示数据流图中能接收的任意数据流图元素，各类Op/Tensor对象。Op.run()将返回None；Tensor.run()将返回Numpy数组
+- `fetches` ”取得之物“，表示数据流图中能接收的任意数据流图元素，各类Optimizer/Tensor对象。Optimizer.run()将返回None；Tensor.run()将返回Numpy数组
 
 ```python
 import tensorflow as tf
@@ -118,8 +112,6 @@ print(v2)
 
 
 
-
-
 `tf.Variable()`: 用于生成一个初始值为initial-value的变量；必须指定初始化值。
 
 `tf.get_variable()`: 获取已存在的变量（要求不仅名字，而且初始化方法等各个参数都一样），如果不存在，就新建一个。**可以用各种初始化方法，不用明确指定值。**
@@ -130,9 +122,208 @@ print(v2)
 
 
 
- ### 卷积操作
+ ### 数据操作
+
+#### 数据类型
+
+##### Tensorboard
 
 
+
+##### 常数 Constant
+
+```python
+tf.constant(
+    value,
+    dtype=None,
+    shape=None,
+    name='Const',
+    verify_shape=False
+)
+a = tf.constant([2, 2], name="vector")
+# constant of 2x2 tensor (matrix)
+b = tf.constant([[0, 1], [2, 3]], name="matrix")
+```
+
+若verify_shape为True, 将检查value的维度是否与shape匹配，不匹配则返回TypeError。若verify_shape为False, 以value的最后一个元素将输入数据添补为shape维度。
+
+```python
+tf.zeros(shape, dtype, name)
+# create a tensor of shape and all elements are zeros
+tf.zeros([2, 3], tf.int32) ==> [[0, 0, 0], [0, 0, 0]
+                                
+tf.zeros_like(input_tensor, dtype, name, optimize=True)
+# create a tensor of shape and type (unless type is specified) as the input_tensor but all elements are zeros.
+# input_tensor [[0, 1], [2, 3], [4, 5]]
+tf.zeros_like(input_tensor) ==> [[0, 0], [0, 0], [0, 0]]
+                                
+tf.ones(shape, dtype, name)
+# create a tensor of shape and all elements are ones
+tf.ones([2, 3], tf.int32) ==> [[1, 1, 1], [1, 1, 1]]
+                                
+tf.ones_like(input_tensor, dtype, name, optimize=True)
+# like above
+
+tf.fill(dims, value, name= None) # create a tensor filled with a scalar value
+>>>tf.fill([2, 3], 8) ==> [[8, 8, 8], [8, 8, 8]]
+```
+
+Create constants that are sequences
+
+```python
+tf.linspace(start, stop, num, name = None)
+# tf.lin_space(10.0, 13.0, 4) ==> [10. 11. 12. 13.]
+
+tf.range(start, limit=None, delta=1, dtype=None, name='range') # delta is stepsize
+>>>tf.range(3, 18, 3) ==> [3 6 9 12 15]
+>>>tf.range(5) ==> [0 1 2 3 4]
+
+```
+
+Note that unlike NumPy or Python sequences, TensorFlow sequences **are not iterable !!!**
+
+
+
+- 0-d tensor = scalar
+
+```python
+t_0 = 19 # Treated as a 0-d tensor, or "scalar" 
+tf.zeros_like(t_0)                   # ==> 0
+tf.ones_like(t_0)                    # ==> 1
+```
+
+- 1-d tensor = vector
+
+```python
+t_1 = ["apple", "peach", "grape"] # treated as a 1-d tensor, or "vector"
+tf.zeros_like(t_1)                   # ==> [b'' b'' b'']
+tf.ones_like(t_1)                    # ==> TypeError
+```
+
+- 2-d tensor = matrix
+
+```python
+t_2 = [[True, False, False],
+       [False, False, True],
+       [False, True, False]]         # treated as a 2-d tensor, or "matrix"
+
+tf.zeros_like(t_2)                   # ==> 3x3 tensor, all elements are False
+tf.ones_like(t_2)                    # ==> 3x3 tensor, all elements are True
+# 当输入数据为布尔值的时候，这里比较特殊
+```
+
+- relations with **Numpy**
+
+  - np.int32 == tf.int32
+
+  - ```python
+    tf.ones([2, 2], np.float32) ==> [[1.0 1.0], [1.0 1.0]]
+    ```
+
+  - ```python
+    tf.Session.run()
+    # If the requested object is a Tensor, the output of will be a NumPy array.
+    ```
+
+    
+
+```python
+tf.random_shuffle(value, seed = None, name = None)
+# random shuffle at first dimension
+
+tf.random_crop(value, size, seed = None, name = None)
+
+```
+
+
+
+##### 运算操作
+
+**Division**
+
+```python
+a = tf.constant([2, 2], name='a')
+b = tf.constant([[0, 1], [2, 3]], name='b')
+with tf.Session() as sess:
+	print(sess.run(tf.div(b, a)))             ⇒ [[0 0] [1 1]]
+	print(sess.run(tf.divide(b, a)))          ⇒ [[0. 0.5] [1. 1.5]]
+	print(sess.run(tf.truediv(b, a)))         ⇒ [[0. 0.5] [1. 1.5]]
+	print(sess.run(tf.floordiv(b, a)))        ⇒ [[0 0] [1 1]]
+	print(sess.run(tf.realdiv(b, a)))         ⇒ # Error: only works for real values
+	print(sess.run(tf.truncatediv(b, a)))     ⇒ [[0 0] [1 1]]
+	print(sess.run(tf.floor_div(b, a)))       ⇒ [[0 0] [1 1]]
+```
+
+- `tf.div()`  #like in python2
+
+```python
+tf.div(7, 5)
+# >>> 1
+tf.div(-7, 5)
+# >>> -2
+tf.div(7.0, 5.0)
+# >>> 1.4
+```
+
+- `tf.divede(x,y)`: act as `x/y`
+- `tf.truediv()`: # like in python3, if both arguments are integers they are first cast into float type
+
+```python
+tf.truediv(7, 5)
+# >>> 1.4
+tf.truediv(-7, 5)
+# >>> -1.4
+tf.truediv(7.0, 5.0)
+# >>> 1.4
+```
+
+- `tf.floordiv()`: 
+
+```python
+tf.floordiv(7, 5) # if both arguments are integers, return the same result as tf.div
+# >>> 1
+tf.floordiv(-7, 5)
+# >>> -2
+tf.floordiv(7.0, 5.0) # tf.floor(tf.div(x,y)) if both arguments are floating point numbers
+# >>> 1.0
+tf.floordiv(-7.0, 5.0) # 向下取整
+# >>> -2.0
+```
+
+- `tf.realdiv()`: 
+
+  
+
+**Multiplication**
+
+```python
+tf.mul() # multipy elementweisely 
+a = tf.constant([10, 20], name='a')
+b = tf.constant([2, 3], name='b')
+with tf.Session() as sess:
+	print(sess.run(tf.multiply(a, b)))           ⇒ [20 60] # element-wise multiplication
+	print(sess.run(tf.tensordot(a, b, 1)))       ⇒ 80
+```
+
+
+
+Allows you to add multiple tensors.
+
+```
+tf.add_n([a,b,b]) => equivalent to a + b + b
+```
+
+
+
+
+
+##### 数据类型 Data Types
+
+##### 变量 Variables
+
+
+
+#### 卷积操作
 
 ```python
 # Computes a 3-D convolution given 5-D input and filters tensors.
@@ -223,6 +414,19 @@ If `axis` is None, all dimensions are reduced, and a tensor with a single elemen
 
 
 
+```python
+tf.reduce_sum(
+    input_tensor,
+    axis=None,
+    keepdims=None,
+    name=None,
+    reduction_indices=None,
+    keep_dims=None
+)
+```
+
+Computes the sum of elements across dimensions of a tensor. (deprecated arguments)
+
 ### 层的设计
 
 `tf.layers.dense():`全连接层 相当于添加一个层
@@ -233,4 +437,31 @@ If `axis` is None, all dimensions are reduced, and a tensor with a single elemen
 
 
 ###  训练网络
+
+### 数据保存
+
+```
+import tensorflow as tf
+a = tf.constant(2)
+b = tf.constant(3)
+x = tf.add(a, b)
+writer = tf.summary.FileWriter('./graphs', tf.get_default_graph())
+with tf.Session() as sess:
+
+	# writer = tf.summary.FileWriter('./graphs', sess.graph) 
+	print(sess.run(x))
+writer.close() # close the writer when you’re done using it
+```
+
+在训练过程中记录数据的利器: tf.summary()提供了各类方法（支持各种多种格式）用于保存训练过程中产生的数据（比如loss_value、accuracy、整个variable），这些数据以日志文件的形式保存到指定的文件夹中。其中包含以下几种数据结构：
+
+```
+- Scalars
+- Images
+- Audio
+- Graph
+- Distribution
+- Histograms
+- Embeddings
+```
 
