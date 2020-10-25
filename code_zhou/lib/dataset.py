@@ -77,6 +77,44 @@ def create_subcate_dataset(img_path, model_path, bs, scale, is_train, repeat_siz
     
     return dataset
 
+# read only the volumetric data
+
+def create_vox_dataset(model_path, bs, scale, is_train, repeat_size=None):
+    """ dataset includes 3d models of one sub-category (like chair)
+
+    bs -- batchsize
+    scale -- (training_dataset_scale, testing_dataset_scale)
+    """
+    category_model_paths = get_all_subcategory_paths(model_path)
+    # Model paths
+    all_models = []
+    all_ID = [f for f in os.listdir(model_path)]
+    for subcategory_model_path in category_model_paths:
+        subcategory_model = get_subcategory_model(subcategory_model_path)
+        all_models.append(subcategory_model)
+    # Model Id
+    training_size = int(len(all_models) * scale[0])
+    if is_train is True:
+        # Training dataset
+        all_models = all_models[:training_size]
+        all_ID = all_ID[:training_size]
+    else:
+        # Testing dataset
+        all_models = all_models[training_size:]
+        all_ID = all_ID[training_size:]
+
+    print 'The number of training models is', len(all_models)
+    dataset = tf.data.Dataset.from_tensor_slices((all_models, all_ID))
+    dataset = dataset.shuffle(len(all_models))
+
+    if repeat_size is None:
+        dataset = dataset.batch(bs).repeat()
+    else:
+        dataset = dataset.batch(bs).repeat(repeat_size)
+
+    return dataset
+
+
 def create_big_dataset(img_path, model_path, categories, bs, scale, is_train, repeat_size = None):
     imgs = []
     models = []

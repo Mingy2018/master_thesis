@@ -3,18 +3,17 @@ import os
 import sys
 
 sys.path.append('./lib')
-sys.path.append( './utils')
 import visdom
+
 import numpy as np
 import tensorflow as tf
 import dataIO as d
 import config, dataset
 import binvox_rw as bin
 import voxel as V
-import logdirs as lg
 
 from tqdm import *
-# from utils import *
+from utils import *
 
 '''
 Global Parameters
@@ -34,10 +33,9 @@ obj = 'chair'
 alpha_1 = 5
 alpha_2 = 0.0001
 
-train_sample_directory = './train_data/train_sample/'
-model_directory = './train_data/models/'
-generated_model_directory = './train_data/generated_model/'
-dirs=[train_sample_directory, model_directory, generated_model_directory]
+train_sample_directory = './train_sample/'
+model_directory = './models/'
+generated_model_directory = './generated_model/'
 
 is_local = False
 weights = {}
@@ -53,15 +51,15 @@ def voxel_var_encoder(inputs, keep_prob=0.5, phase_train=True, reuse=False):
     with tf.variable_scope("V-encoder", reuse=reuse):
         e_1 = tf.nn.conv3d(inputs, weights['weV1'], strides=strides, padding="SAME")
         e_1 = tf.contrib.layers.batch_norm(e_1, is_training=phase_train)
-        e_1 = tf.nn.elu(e_1)
+        e_1 = lrelu(e_1, leak_value)
 
         e_2 = tf.nn.conv3d(e_1, weights['weV2'], strides=strides, padding="SAME")
         e_2 = tf.contrib.layers.batch_norm(e_2, is_training=phase_train)
-        e_2 = tf.nn.elu(e_2)
+        e_2 = lrelu(e_2, leak_value)
 
         e_3 = tf.nn.conv3d(e_2, weights['weV3'], strides=strides, padding="SAME")
         e_3 = tf.contrib.layers.batch_norm(e_3, is_training=phase_train)
-        e_3 = tf.nn.elu(e_3)
+        e_3 = lrelu(e_3, leak_value)
 
         e_4 = tf.nn.conv3d(e_3, weights['weV4'], strides=[1, 1, 1, 1, 1], padding="VALID")
         e_4 = tf.nn.sigmoid(e_4)
@@ -73,8 +71,13 @@ def voxel_var_encoder(inputs, keep_prob=0.5, phase_train=True, reuse=False):
         z_sig = 0.5 * tf.layers.dense(x, units=z_size)
         epsilon = tf.random_normal(tf.stack([tf.shape(x)[0], z_size]))
         z = z_mu + tf.multiply(epsilon,tf.exp(z_sig))
+        print 'The size of z', z.shape
+        print 'The size of z_mu', z_mu.shape
+        print 'The size of z_sig', z_sig.shape
 
     return z, z_mu, z_sig
+
+def img_var_encoder()
 
 
 def generator(z, batch_size=batch_size, phase_train=True, reuse=False):
@@ -97,7 +100,7 @@ def generator(z, batch_size=batch_size, phase_train=True, reuse=False):
         g_3 = tf.nn.relu(g_3)
 
         g_4 = tf.nn.conv3d_transpose(g_3, weights['wg4'], (batch_size, 32, 32, 32, 1), strides=strides, padding="SAME")
-        g_4 = tf.nn.sigmoid(g_4)
+        g_4 = tf.nn.tanh(g_4)
 
     return g_4
 
@@ -146,6 +149,7 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
     summary_kl_div=tf.summary.scalar("scalar", kl_divergence_vol)
     summary_loss=tf.summary.scalar("scalar",loss)
 
+
     z_vector_v2, _, _ = voxel_var_encoder(vol_tensor_2, phase_train=False, reuse=True)
     z_vector_v2 = tf.maximum(tf.minimum(z_vector_v2, 0.99), -0.99)
     generated_vol_test = generator(z_vector_v2, phase_train=False, reuse=True)
@@ -157,6 +161,7 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
 
     # online viewer
     # vis = visdom.Visdom()
+
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         if checkpoint is not None:
@@ -176,7 +181,6 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
             print("Create the training dataset successfully!")
 
         for epoch in range(n_epochs):
-
             batch = sess.run(batch_tensor)
             if batch[0].shape[0] is not batch_size:
                 batch = sess.run(batch_tensor)
@@ -186,15 +190,13 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
             d_summary_merge = tf.summary.merge([summary_r_loss,
                                                 summary_kl_div,
                                                 summary_loss])
-
             # print out the loss value-----------------------------------
+
             _, loss_1, reconstruction_loss_1, kl_divergence_1 = sess.run([optimizer_op_ae, loss, recon_loss, kl_divergence_vol],feed_dict={vol_tensor_1: model_matrix.eval()})
             print 'VAE Training ', "epoch: ", epoch, ', reconstruction_loss:', reconstruction_loss_1
             print 'VAE Training ', "epoch: ", epoch, ', kl_loss:', kl_divergence_1
             print 'VAE Training ', "epoch: ", epoch, ', Total_loss:', loss_1
-
-            ##crate logging directories
-            lg.create_log_dict(dirs)
+            # ------------------------------------------------------------
 
             # output generated chairs
             if ((epoch % 100 == 0) and (epoch <= 3200)) or ((epoch % 200 == 0) and (epoch > 3200)):
@@ -203,14 +205,17 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
                 model_matrix3 = dataset.modelpath2matrix(batch[0])
                 model_matrix3 = tf.expand_dims(model_matrix3, -1)
                 g_objects = sess.run(generated_vol_test, feed_dict={vol_tensor_2: model_matrix3.eval()}) # batch * 32 * 32 * 32 * 1
+
+                if not os.path.exists(train_sample_directory):
+                    os.makedirs(train_sample_directory)
+                if not os.path.exists(generated_model_directory):
+                    os.makedirs(generated_model_directory)
                 g_objects.dump(train_sample_directory + '/biasfree_' + str(epoch))
                 id_ch = np.random.randint(0, batch_size, 4)
 
                 for i in range(4):
                     if g_objects[id_ch[i]].max() > 0.5:
                         V.write_binvox_file(np.squeeze(g_objects[id_ch[i]] > 0.5), generated_model_directory + '_'.join(map(str, [epoch, batch[1][i]])) + '.binvox')
-
-                        # plot while training
                         #d.plotVoxelVisdom(np.squeeze(g_objects[id_ch[i]] > 0.1), vis, '_'.join(map(str, [epoch, i])))
 
             if ((epoch % 100 == 0) and (epoch <= 6000)) or ((epoch % 1000 == 0) and (epoch > 6000)):
