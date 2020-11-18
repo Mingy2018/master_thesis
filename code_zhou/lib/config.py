@@ -37,7 +37,7 @@ log_path = './log/train/' + '%d' % (subcate)
 """
     Network parameters
 """
-batch_size = 8 #4
+batch_size = 32 #4
 sequence_length = 24 #5
 img_size = [128,128,3] #[127, 127, 3]
 input_size = [batch_size, sequence_length] + img_size

@@ -32,6 +32,8 @@ obj_ratio = 0.7
 obj = 'chair'
 alpha_1 = 5
 alpha_2 = 0.0001
+n_views = 12
+
 
 train_sample_directory = './train_sample/'
 model_directory = './models/'
@@ -71,13 +73,74 @@ def voxel_var_encoder(inputs, keep_prob=0.5, phase_train=True, reuse=False):
         z_sig = 0.5 * tf.layers.dense(x, units=z_size)
         epsilon = tf.random_normal(tf.stack([tf.shape(x)[0], z_size]))
         z = z_mu + tf.multiply(epsilon,tf.exp(z_sig))
-        print 'The size of z', z.shape
-        print 'The size of z_mu', z_mu.shape
-        print 'The size of z_sig', z_sig.shape
+
 
     return z, z_mu, z_sig
 
-def img_var_encoder()
+def img_var_encoder(inputs, keep_prob=0.5, phase_train=True, reuse=False):
+    """
+    input: Batch x Viewns x Width x Height x Channels (tensor)
+    """
+    # transpose views : (BxVxWxHxC) -> (VxBxWxHxC)
+    views = tf.transpose(inputs, perm=[1, 0, 2, 3, 4])
+
+    view_pool = []
+
+    for i in xrange(n_views):
+        # set reuse True for i > 0, for weight-sharing
+        reuse = reuse or (i != 0)
+    with tf.variable_scope("I-encoder", reuse=reuse):
+        view = tf.gather(views, i)  # BxWxHxC B*128*128*3
+
+    conv1 = tf.nn.conv2d(view, weights['weI1'], strides=[1, 1, 1, 1], padding='SAME')
+    conv1 = tf.contrib.layers.batch_norm(conv1, is_training=phase_train)
+    conv1 = tf.nn.relu(conv1)  # B*128*128*64
+
+    conv2_1 = tf.nn.conv2d(conv1, weights['weB2_1'], strides=[1, 2, 2, 1], padding='SAME')
+    conv2_2 = tf.nn.conv2d(conv2_1, weights['weB2_2'], strides=[1, 1, 1, 1], padding='SAME')
+    conv2_3 = tf.nn.conv2d(conv2_2, weights['weB2_3'], strides=[1, 1, 1, 1], padding='SAME')
+    conv2 = tf.concat([conv2_1, conv2_3], axis=-1)
+    conv2 = tf.contrib.layers.batch_norm(conv2, is_training=phase_train)
+    conv2 = tf.nn.relu(conv2)  # B*64*64*128
+
+    conv3_1 = tf.nn.conv2d(conv2, weights['weB3_1'], strides=[1, 2, 2, 1], padding='SAME')
+    conv3_2 = tf.nn.conv2d(conv3_1, weights['weB3_2'], strides=[1, 1, 1, 1], padding='SAME')
+    conv3_3 = tf.nn.conv2d(conv3_2, weights['weB3_3'], strides=[1, 1, 1, 1], padding='SAME')
+    conv3 = tf.concat([conv3_1, conv3_3], axis=-1)
+    conv3 = tf.contrib.layers.batch_norm(conv3, is_training=phase_train)
+    conv3 = tf.nn.relu(conv3)  # B*32*32*256
+
+    conv4_1 = tf.nn.conv2d(conv3, weights['weB4_1'], strides=[1, 2, 2, 1], padding='SAME')
+    conv4_2 = tf.nn.conv2d(conv4_1, weights['weB4_2'], strides=[1, 1, 1, 1], padding='SAME')
+    conv4_3 = tf.nn.conv2d(conv4_2, weights['weB4_3'], strides=[1, 1, 1, 1], padding='SAME')
+    conv4 = tf.concat([conv4_1, conv4_3], axis=-1)
+    conv4 = tf.contrib.layers.batch_norm(conv4, is_training=phase_train)
+    conv4 = tf.nn.relu(conv4)  # B*16*16*512
+
+    conv5_1 = tf.nn.conv2d(conv4, weights['weB5_1'], strides=[1, 2, 2, 1], padding='SAME')
+    conv5_2 = tf.nn.conv2d(conv5_1, weights['weB5_2'], strides=[1, 1, 1, 1], padding='SAME')
+    conv5_3 = tf.nn.conv2d(conv5_2, weights['weB5_3'], strides=[1, 1, 1, 1], padding='SAME')
+    conv5 = tf.concat([conv5_1, conv5_3], axis=-1)
+    conv5 = tf.contrib.layers.batch_norm(conv5, is_training=phase_train)
+    conv5 = tf.nn.relu(conv5)  # B*8*8*1024
+
+    pool6 = tf.nn.avg_pool(conv5, ksize=[1, 8, 8, 1], strides=[1, 1, 1, 1], padding='VALID')  # B*1*1*1024
+    # dim = np.prod(pool5.get_shape().as_list()[1:])
+    # reshape = tf.reshape(pool5, [-1, dim])
+    view_pool.append(pool6)
+
+    # view_pool = tf.reshape(view_pool, (batch_size, 1, 1, -1, n_views)) #B*1*1*1024*V
+    view_pool = tf.stack(view_pool, 0)
+    view_pool = tf.transpose(view_pool, perm=[1, 2, 3, 4, 0])  # B*1*1*1024*V
+    print view_pool.shape
+    pool6_vp = tf.reduce_max(view_pool, axis=-1)  # B*1*1*1024
+
+with tf.variable_scope("encoderB", reuse=reuse):
+    fc7 = tf.nn.conv2d(pool6_vp, weights['weB7'], strides=[1, 1, 1, 1], padding='SAME')  # B*1*1*512
+    fc8 = tf.nn.conv2d(fc7, weights['weB8'], strides=[1, 1, 1, 1], padding='SAME')  # B*1*1*z_size
+    fc8 = tf.nn.tanh(fc8)
+
+return fc8
 
 
 def generator(z, batch_size=batch_size, phase_train=True, reuse=False):

@@ -341,10 +341,33 @@ tf.nn.conv3d(
 - `input:` [batch, in_depth, in_height, in_width, in_channels]
   - in_depth=3; 例如序列长度, 
   - in_channels=2; 每一个帧的通道数
+  
 - `filter:`[filter_depth, filter_height, filter_width, in_channels, out_channels]
   - filter_depth: 时间维度的跨度
   - in_channels: 帧通道数，must match between `input` and `filters`.
   - out_channels: 卷积核个数，输出后每帧的通道数
+  
+- `strides:` input每个维度的滑动窗口的步幅；必须有strides[0] = strides[-1] = 1.
+
+- `padding:` 填充算法的类型, "SAME"或"VALID"
+
+  - "VALID": 不在任何维度补pad
+
+    ```
+      inputs:         1  2  3  4  5  6  7  8  9  10 11 (12 13)
+                      |________________|                dropped
+                                     |_________________|
+    ```
+
+  - "SAME": 在`stride`的尺度下，`Wo`与`Wi`保持在stride下保持一致（以宽度维度为例)
+
+    ```
+                   pad|                                      |pad
+       inputs:      0 |1  2  3  4  5  6  7  8  9  10 11 12 13|0  0
+                   |________________|
+                                  |_________________|
+                                                 |________________|
+    ```
 
 对应的关系见下方例子，可以好理解一些：
 

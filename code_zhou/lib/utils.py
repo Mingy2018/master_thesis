@@ -34,11 +34,11 @@ def batchNorm(x, n_out, phase_train, scope='bn'):
 
 
 class batch_norm(object):
-  	def __init__(self, epsilon=1e-5, momentum = 0.9, name="batch_norm"):
-		with tf.variable_scope(name):
-			self.epsilon  = epsilon
-      		self.momentum = momentum
-      		self.name = name
+    def __init__(self, epsilon=1e-5, momentum = 0.9, name="batch_norm"):
+        with tf.variable_scope(name):
+            self.epsilon  = epsilon
+            self.momentum = momentum
+            self.name = name
 
 	def __call__(self, x, train=True):
 		return tf.contrib.layers.batch_norm(x,
@@ -52,7 +52,7 @@ class batch_norm(object):
 
 def threshold(x, val=0.5):
     x = tf.clip_by_value(x,0.5,0.5001) - 0.5
-    x = tf.minimum(x * 10000,1) 
+    x = tf.minimum(x * 10000,1)
     return x
 
 def lrelu(x, leak=0.2):
