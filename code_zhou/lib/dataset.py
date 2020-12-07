@@ -12,6 +12,7 @@ import glob
 import data_augmentation
 import voxel
 import os
+import scipy.ndimage as nd
 
 """
     File directory processing.
@@ -81,7 +82,6 @@ def create_subcate_dataset(img_path, model_path, bs, scale, is_train, repeat_siz
 
 def create_vox_dataset(model_path, bs, scale, is_train, repeat_size=None):
     """ dataset includes 3d models of one sub-category (like chair)
-
     bs -- batchsize
     scale -- (training_dataset_scale, testing_dataset_scale)
     """
@@ -182,10 +182,13 @@ def img2matrix(image_batch, sequence_length):
     return np.array(images)
     
 
-def modelpath2matrix(gt_array):
+def modelpath2matrix(gt_array, padding = False):
     gt = []
     for paths in gt_array:
         model = voxel.read_voxel_data(paths[0])
+        if padding:
+            model = nd.zoom(model, (0.75, 0.75, 0.75), mode = 'constant', order = 0)
+            model = np.pad(model, ((4,4),(4,4),(4,4)), 'constant')
         gt.append(model)
     gt = np.array(gt)
     return gt

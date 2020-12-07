@@ -24,7 +24,7 @@ dataset_scale = (0.8, 0.2) # training_dataset_scale : testing_dataset_scale = 4 
 init_learning_rate = 1e-4
 lr_decay = 0.95
 lr_decay_steps = 100
-epoch = 1000 #200
+epoch = 200000
 
 subcate = 4 #0
 save_model_step = 100
@@ -48,3 +48,5 @@ ground_truth_size = [batch_size] + model_size
 prediction_size = [batch_size] + model_size + [2]
 
 threshold = 0.4
+
+

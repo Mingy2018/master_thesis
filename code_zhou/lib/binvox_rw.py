@@ -106,6 +106,9 @@ def read_header(fp):
     """ Read binvox header. Mostly meant for internal use.
     """
     line = fp.readline().strip()
+    #print 'Line is', line, type(line)
+    #ll1 = fp.readline().strip().split(b' ')
+    #print 'Processed line is ', ll1
     if not line.startswith(b'#binvox'):
         raise IOError('Not a binvox file')
     dims = list(map(int, fp.readline().strip().split(b' ')[1:]))
@@ -166,9 +169,7 @@ def read_as_coord_array(fp, fix_coords=True):
     """
     dims, translate, scale = read_header(fp)
     raw_data = np.frombuffer(fp.read(), dtype=np.uint8)
-
     values, counts = raw_data[::2], raw_data[1::2]
-
     sz = np.prod(dims)
     index, end_index = 0, 0
     end_indices = np.cumsum(counts)
@@ -196,7 +197,6 @@ def read_as_coord_array(fp, fix_coords=True):
     else:
         data = np.vstack((x, z, y))
         axis_order = 'xzy'
-
     #return Voxels(data, dims, translate, scale, axis_order)
     return Voxels(np.ascontiguousarray(data), dims, translate, scale, axis_order)
 

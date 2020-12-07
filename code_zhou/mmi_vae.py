@@ -18,7 +18,7 @@ from utils import *
 '''
 Global Parameters
 '''
-n_epochs = 20001
+# n_epochs = 20001
 batch_size = 8
 g_lr = 0.0025  # 0.0025
 d_lr = 0.00001  # 0.00001
@@ -243,7 +243,7 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
             batch_tensor = iterator.get_next()
             print("Create the training dataset successfully!")
 
-        for epoch in range(n_epochs):
+        for epoch in range(config.epoch):
             batch = sess.run(batch_tensor)
             if batch[0].shape[0] is not batch_size:
                 batch = sess.run(batch_tensor)
