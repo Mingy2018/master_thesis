@@ -13,11 +13,17 @@ import config, dataset
 import binvox_rw as bin
 import voxel as V
 import logdirs as lg
-from datetime import datetime
 import shutil
 
 from tqdm import *
 from utils import *
+
+
+
+'''
+Train configration
+'''
+save_data_path = '/home/zmy/TrainingData'
 
 '''
 Global Parameters
@@ -217,7 +223,7 @@ def trainGAN(is_dummy=False, checkpoint=None, subcate=config.subcate):
             print("Create the training dataset successfully!")
 
         # crate logging directories
-        root_directory, train_sample_directory, generated_model_directory, model_directory = lg.create_log_dict()
+        root_directory, train_sample_directory, generated_model_directory, model_directory = lg.create_log_dict(save_data_path)
         shutil.copy2(__file__, root_directory)
 
         for epoch in range(n_epochs):

@@ -30,7 +30,7 @@ voxel value [-1, 2]
 
 Reimplement of paper ["Generative and Discriminative Voxel Modeling with Convolutional Neural Networks"](https://arxiv.org/abs/1608.04236) 
 
-Input voxel size [32,32,32]: [24, 24, 24] subvolume with object, 4 voxels of padding at each side
+Input voxel size [32,32,32]: [24,24,24] subvolume with object, 4 voxels of zero padding at each side
 
 data augmentation(rotations and translations)
 
@@ -49,9 +49,19 @@ dataset_img_path = '/home/zmy/Datasets/3d-r2n2-datasat/ShapeNetRendering/'
 dataset_model_path = '/home/zmy/Datasets/3d-r2n2-datasat/ShapeNetVox32/'
 ```
 
-Set the path for saving training data in 
+Set the path for saving training data:
+
+
 
 #### Start Training
+
+- Set the path for saving training data in the train script you choose:
+
+```python
+save_data_path = '/home/zmy/TrainingData'
+```
+
+- Run the train script
 
 ```shell
 python vae_vo_Andrew_oridata.py 0 0
