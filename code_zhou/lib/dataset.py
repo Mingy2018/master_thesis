@@ -67,7 +67,7 @@ def create_subcate_dataset(img_path, model_path, bs, scale, is_train, repeat_siz
         all_models = all_models[training_size:]
         all_ID = all_ID[training_size:]
 
-    print 'The number of training models is', len(all_models)
+    #print 'The number of training models is', len(all_models)
     dataset = tf.data.Dataset.from_tensor_slices((all_images, all_models, all_ID))
     dataset = dataset.shuffle(len(all_models))
     dataset = dataset.map(map_batch)
@@ -103,7 +103,7 @@ def create_vox_dataset(model_path, bs, scale, is_train, repeat_size=None):
         all_models = all_models[training_size:]
         all_ID = all_ID[training_size:]
 
-    print 'The number of training models is', len(all_models)
+    #print 'The number of training models is', len(all_models)
     dataset = tf.data.Dataset.from_tensor_slices((all_models, all_ID))
     dataset = dataset.shuffle(len(all_models))
 
@@ -146,8 +146,8 @@ def create_big_dataset(img_path, model_path, categories, bs, scale, is_train, re
         imgs = imgs + cate_imgs
         models = models + cate_models
     
-    print len(imgs)
-    print len(models)
+    #print len(imgs)
+    #print len(models)
     
     big_dataset = tf.data.Dataset.from_tensor_slices((imgs, models))
     if repeat_size is None:
