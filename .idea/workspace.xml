@@ -20,7 +20,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36b611d8-24d4-4211-a426-d7678cef0d59" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/code_zhou/lib/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/code_zhou/lib/dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/binvox_IO.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/binvox_IO.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils/save_volume.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/save_volume.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +43,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1jWLWQTup6C3qzskY11Ctq9Kf8w" />
-  <component name="ProjectLevelVcsManager">
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectViewState">
@@ -52,6 +57,9 @@
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/code_zhou/func" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/code_zhou/train_data/2020_12_01_13_38_54" />
       <recent name="$PROJECT_DIR$/code_zhou/train_data/2020_12_01_11_37_08" />
@@ -59,6 +67,72 @@
       <recent name="$PROJECT_DIR$/code_zhou/train_data/2020_11_18_09_04_47" />
       <recent name="$PROJECT_DIR$/code_zhou/train_data/2020_11_16_18_09_05" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="master_thesis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="master_thesis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="master_thesis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <module name="master_thesis" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -86,10 +160,10 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1091" y="476" width="424" height="513" key="FileChooserDialogImpl" timestamp="1607513311022">
+    <state x="1091" y="476" width="424" height="513" key="FileChooserDialogImpl" timestamp="1607549149791">
       <screen x="67" y="27" width="2493" height="1413" />
     </state>
-    <state x="1091" y="476" width="424" height="513" key="FileChooserDialogImpl/67.27.2493.1413@67.27.2493.1413" timestamp="1607513311022" />
+    <state x="1091" y="476" width="424" height="513" key="FileChooserDialogImpl/67.27.2493.1413@67.27.2493.1413" timestamp="1607549149791" />
     <state x="482" y="187" key="SettingsEditor" timestamp="1604305872219">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -98,10 +172,10 @@
       <screen x="67" y="27" width="2493" height="1413" />
     </state>
     <state width="498" height="446" key="SwitcherDM/67.27.2493.1413@67.27.2493.1413" timestamp="1606783528840" />
-    <state x="560" y="69" width="1224" height="1371" key="dock-window-1" timestamp="1606128003341">
+    <state x="1631" y="212" width="1224" height="1371" key="dock-window-1" timestamp="1607561808336">
       <screen x="67" y="27" width="2493" height="1413" />
     </state>
-    <state x="560" y="69" width="1224" height="1371" key="dock-window-1/67.27.2493.1413@67.27.2493.1413" timestamp="1606128003341" />
+    <state x="1631" y="212" width="1224" height="1371" key="dock-window-1/67.27.2493.1413@67.27.2493.1413" timestamp="1607561808336" />
     <state x="1726" y="594" width="400" height="277" key="scopes" timestamp="1605735778516">
       <screen x="67" y="27" width="2493" height="1413" />
     </state>

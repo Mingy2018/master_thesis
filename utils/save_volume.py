@@ -48,32 +48,18 @@ def save_output(output_arr, output_size, output_dir, file_idx):
     plt.close()
 
 
-def save_binvox_output(output_arr, output_size, output_dir, file_idx):
-    plot_out_arr = np.array([])
-    for x_i in range(0, output_size):
-        for y_j in range(0, output_size):
-            for z_k in range(0, output_size):
-                plot_out_arr = np.append(plot_out_arr, output_arr[x_i, y_j, z_k])
+def save_binvox_output(output_arr, output_hash, output_dir, outstr, save_bin = False):
 
-    text_save = np.reshape(plot_out_arr, (output_size * output_size * output_size))
-    np.savetxt(output_dir + '/volume' + str(file_idx) + '.txt', text_save)
+    # save objedt as .binvox
+    if save_bin:
+        s1 = output_dir + '/' + output_hash + outstr + '.binvox'
+        print('The s1 is', s1)
+        s1 = bytes(s1, 'utf-8')
+        binvox_IO.write_binvox_file(output_arr, s1)
 
-    output_image = np.reshape(plot_out_arr, (output_size, output_size, output_size)).astype(np.float32)
-
-    s1 = output_dir + '/volume' + str(file_idx) + '.binvox'
-    print('The type of s1', type(s1))
-    s1 = bytes(s1, 'UTF-8')
-    binvox_IO.write_binvox_file(output_arr, s1 )
-
-    #output_image = np.rot90(output_image)
-    x, y, z = output_image.nonzero()
+    # save the model image
     fig = plt.figure()
-    #ax = fig.add_subplot(111, projection='3d')
     ax =fig.gca(projection = '3d')
     ax.voxels(output_arr.astype(np.bool), edgecolors='k')
-
-    #ax.scatter(x, y, z, zdir='z', c='red')
-    #ax.voxels()
-
-    plt.savefig(output_dir + '/volume' + str(file_idx) + '.png')
+    plt.savefig(output_dir + '/'+ output_hash+ outstr + '.png')
     plt.close()

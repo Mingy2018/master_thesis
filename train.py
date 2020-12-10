@@ -68,8 +68,7 @@ if __name__ == '__main__':
 
     #plot_model(vae, to_file = 'vae.pdf', show_shapes = True)
 
-    data_train = binvox_IO.voxelpath2matrix('/home/zmy/Datasets/03001627_small')
-    print('One value in dataset', data_train[45][0][4][4][4])
+    data_train = binvox_IO.voxelpath2matrix('/home/zmy/Datasets/03001627_ori')
 
     vae.fit(
         data_train,
