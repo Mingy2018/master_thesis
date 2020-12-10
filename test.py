@@ -33,24 +33,24 @@ if __name__ == '__main__':
     decoder = model['decoder']
     vae = model['vae']
 
-    vae.load_weights('vae_binvox.h5')
+    vae.load_weights('/home/zmy/TrainingData/tf1.x.keras/vae_binvox_train_kl.h5')
 
     #data_test = data_loader('datasets/shapenet10_chairs_nr.tar')
-    data_test, hash = binvox_IO.voxelpath2matrix('/home/zmy/Datasets/03001627_test')
+    data_test, hash = binvox_IO.voxelpath2matrix('/home/zmy/Datasets/03001627_test_1')
 
     reconstructions = vae.predict(data_test)
     reconstructions[reconstructions > 0] = 1
     reconstructions[reconstructions < 0] = 0
 
-    if not os.path.exists('reconstructions'):
-        os.makedirs('reconstructions')
+    if not os.path.exists('reconstructions_2'):
+        os.makedirs('reconstructions_2')
 
     if True:
         for i in range(reconstructions.shape[0]):
-            shutil.copy2('/home/zmy/Datasets/03001627_test/'+hash[i]+'.binvox', './reconstructions')
+            shutil.copy2('/home/zmy/Datasets/03001627_test/'+hash[i]+'.binvox', './reconstructions_2')
             data_test[data_test > 0] = 1
             data_test[data_test < 0] = 0
-            save_volume.save_binvox_output(data_test[i, 0, :], hash[i], 'reconstructions', '')
+            save_volume.save_binvox_output(data_test[i, 0, :], hash[i], 'reconstructions_2', '')
 
     for i in range(reconstructions.shape[0]):
-        save_volume.save_binvox_output(reconstructions[i, 0, :], hash[i], 'reconstructions', '_gen', save_bin= True)
+        save_volume.save_binvox_output(reconstructions[i, 0, :], hash[i], 'reconstructions_2', '_gen', save_bin= True)
