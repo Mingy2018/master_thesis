@@ -51,18 +51,15 @@ def main():
     # voxel_compress_padding(binvox, ID,'/home/zmy/Datasets/03001627_ori/', False)
 
     # Part generate small dataset 800 ele
-    binvox = os.listdir('/home/zmy/Datasets/03001627_ori')
-    id_ch = random.sample(range(0,6777), 1000)
-    os.makedirs('/home/zmy/Datasets/03001627_test')
-    for i in range(1000):
-        shutil.copy2('/home/zmy/Datasets/03001627_ori/'+binvox[id_ch[i]], '/home/zmy/Datasets/03001627_test')
-    test_file = os.listdir('/home/zmy/Datasets/03001627_test')
-    for file in os.listdir('/home/zmy/Datasets/03001627_train'):
-        if file in test_file:
-            os.remove(os.path.join('/home/zmy/Datasets/03001627_train', file))
-
-
-
+    binvox = os.listdir('/home/zmy/Datasets/03001627_test')
+    id_ch = random.sample(range(0,999), 100)
+    os.makedirs('/home/zmy/Datasets/03001627_test_1')
+    for i in range(100):
+        shutil.copy2('/home/zmy/Datasets/03001627_test/'+binvox[id_ch[i]], '/home/zmy/Datasets/03001627_test_1')
+    # test_file = os.listdir('/home/zmy/Datasets/03001627_test')
+    # for file in os.listdir('/home/zmy/Datasets/03001627_train'):
+    #     if file in test_file:
+    #         os.remove(os.path.join('/home/zmy/Datasets/03001627_train', file))
 
 if __name__ == '__main__':
     main()
