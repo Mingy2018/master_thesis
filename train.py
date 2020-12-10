@@ -59,8 +59,8 @@ if __name__ == '__main__':
 
     vae = model['vae']
 
-    # kl_div = -0.5 * K.mean(1 + 2 * sigma - K.square(mu) - K.exp(2 * sigma))
-    voxel_loss = K.cast(K.mean(weighted_binary_crossentropy(inputs, K.clip(sigmoid(outputs), 1e-7, 1.0 - 1e-7))), 'float32') # + kl_div
+    kl_div = -0.5 * K.mean(1 + 2 * sigma - K.square(mu) - K.exp(2 * sigma))
+    voxel_loss = K.cast(K.mean(weighted_binary_crossentropy(inputs, K.clip(sigmoid(outputs), 1e-7, 1.0 - 1e-7))), 'float32')  + kl_div
     vae.add_loss(voxel_loss)
 
     sgd = SGD(lr = learning_rate_1, momentum = momentum, nesterov = True)
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     #plot_model(vae, to_file = 'vae.pdf', show_shapes = True)
 
-    data_train = binvox_IO.voxelpath2matrix('/home/zmy/Datasets/03001627_ori')
+    data_train = binvox_IO.voxelpath2matrix('/home/zmy/Datasets/03001627_train')
 
     vae.fit(
         data_train,
@@ -78,4 +78,4 @@ if __name__ == '__main__':
         callbacks = [LearningRateScheduler(learning_rate_scheduler)]
     )
 
-    vae.save_weights('vae_binvox.h5')
+    vae.save_weights('vae_binvox_train_kl.h5')
