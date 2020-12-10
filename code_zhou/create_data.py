@@ -11,6 +11,7 @@ import scipy.ndimage as nd
 import numpy as np
 import shutil, os
 import glob
+import random
 
 def get_dataname(model_path):
 
@@ -51,11 +52,15 @@ def main():
 
     # Part generate small dataset 800 ele
     binvox = os.listdir('/home/zmy/Datasets/03001627_ori')
-    print(binvox[333])
-    id_ch = np.random.random_integers(0, 6777, 100)
+    id_ch = random.sample(range(0,6777), 1000)
     os.makedirs('/home/zmy/Datasets/03001627_test')
-    for i in range(100):
+    for i in range(1000):
         shutil.copy2('/home/zmy/Datasets/03001627_ori/'+binvox[id_ch[i]], '/home/zmy/Datasets/03001627_test')
+    test_file = os.listdir('/home/zmy/Datasets/03001627_test')
+    for file in os.listdir('/home/zmy/Datasets/03001627_train'):
+        if file in test_file:
+            os.remove(os.path.join('/home/zmy/Datasets/03001627_train', file))
+
 
 
 
