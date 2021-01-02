@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
     #plot_model(vae, to_file = 'vae.pdf', show_shapes = True)
 
-    data_train = binvox_IO.voxelpath2matrix('/home/zmy/Datasets/03001627_train')
+    data_train = binvox_IO.voxelpath2matrix('./dataset/03001627_train')
 
     vae.fit(
         data_train,
@@ -78,4 +78,4 @@ if __name__ == '__main__':
         callbacks = [LearningRateScheduler(learning_rate_scheduler)]
     )
 
-    vae.save_weights('vae_binvox_train_kl.h5')
+    vae.save_weights('vae_binvox.h5')
