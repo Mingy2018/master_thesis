@@ -1,3 +1,4 @@
+
 import numpy as np
 import tensorflow as tf
 import tensorflow.keras as keras
@@ -6,7 +7,7 @@ from tensorflow.keras.layers import Input, BatchNormalization, Conv3D, Dense, Fl
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.models import Model
 from tensorflow.keras import backend as K
-from beta_sample_layer import *
+from beta_sample_layer import SampleLayer
 
 input_shape = (1, 32, 32, 32)
 z_dim = 128
@@ -19,7 +20,8 @@ def sampling(args):
 
     return mu + K.exp(0.5 * sigma) * epsilon
 
-def get_model():
+def get_beta_vae(vae_gamma, vae_capacity):
+    ### Encoder
     enc_in = Input(shape = input_shape)
 
     enc_conv1 = BatchNormalization()(
@@ -64,6 +66,7 @@ def get_model():
             units = 343,
             kernel_initializer = 'glorot_normal',
             activation = 'elu')(Flatten()(enc_conv4)))
+
     mu = BatchNormalization()(
         Dense(
             units = z_dim,
@@ -74,14 +77,13 @@ def get_model():
             units = z_dim,
             kernel_initializer = 'glorot_normal',
             activation = None)(enc_fc1))
-    z = Lambda(
-        sampling,
-        output_shape = (z_dim, ))([mu, sigma])
 
+    # beta-VAE implemented as follows
+    z = SampleLayer(gamma=vae_gamma, capacity=vae_capacity, name='sampling_layer')([mu, sigma])
     encoder = Model(enc_in, [mu, sigma, z])
 
+    ### Decoder
     dec_in = Input(shape = (z_dim, ))
-
     dec_fc1 = BatchNormalization()(
         Dense(
             units = 343,
@@ -141,7 +143,7 @@ def get_model():
 
     dec_conv5 = decoder(encoder(enc_in)[2])
 
-    vae = Model(enc_in, dec_conv5)
+    beta_vae = Model(enc_in, dec_conv5)
 
     return {'inputs': enc_in,
             'outputs': dec_conv5,
@@ -150,4 +152,4 @@ def get_model():
             'z': z,
             'encoder': encoder,
             'decoder': decoder,
-            'vae': vae}
+            'beta_vae': beta_vae}

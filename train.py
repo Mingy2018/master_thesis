@@ -9,6 +9,7 @@ from tensorflow.keras.callbacks import LearningRateScheduler
 from tensorflow.keras import backend as K
 
 from VAE import *
+#from beta_VAE import *
 from utils import npytar, binvox_IO
 import glob
 
@@ -16,7 +17,7 @@ learning_rate_1 = 0.0001
 learning_rate_2 = 0.005
 momentum = 0.9
 batch_size = 10
-epoch_num = 150
+epoch_num = 10
 
 ConFig=tf.ConfigProto()
 ConFig.gpu_options.allow_growth=True
@@ -43,8 +44,8 @@ def learning_rate_scheduler(epoch, lr):
     return lr
 
 if __name__ == '__main__':
-    model = get_model()
 
+    model = get_model()
     inputs = model['inputs']
     outputs = model['outputs']
     mu = model['mu']
@@ -54,19 +55,36 @@ if __name__ == '__main__':
     encoder = model['encoder']
     decoder = model['decoder']
 
-    #plot_model(encoder, to_file = 'vae_encoder.pdf', show_shapes = True)
-    #plot_model(decoder, to_file = 'vae_decoder.pdf', show_shapes = True)
+    plot_model(encoder, to_file = 'vae_encoder.pdf', show_shapes = True)
+    plot_model(decoder, to_file = 'vae_decoder.pdf', show_shapes = True)
 
     vae = model['vae']
 
-    kl_div = -0.5 * K.mean(1 + 2 * sigma - K.square(mu) - K.exp(2 * sigma))
-    voxel_loss = K.cast(K.mean(weighted_binary_crossentropy(inputs, K.clip(sigmoid(outputs), 1e-7, 1.0 - 1e-7))), 'float32')  + kl_div
-    vae.add_loss(voxel_loss)
 
+    # Loss functions
+
+    # kl-divergence
+    kl_div = -0.5 * K.mean(1 + sigma - K.square(mu) - K.exp(sigma))
+
+    # Loss function in Genrative ... paper: a specialized form of Binary Cross-Entropy (BCE)
+    BCE_loss = K.cast(K.mean(weighted_binary_crossentropy(inputs, K.clip(sigmoid(outputs), 1e-7, 1.0 - 1e-7))), 'float32')
+
+    # loss in beta-vae paper
+
+    # gamma = 1000
+    # max_capacity = 50
+    # latent_loss = K.mean(kl_div)
+    # latent_loss = gamma * K.abs(latent_loss - max_capacity)
+    # latent_loss = K.reshape(latent_loss, [1,1])
+
+    # Total loss
+    loss = kl_div + BCE_loss #+ latent_loss
+
+    vae.add_loss(loss)
     sgd = SGD(lr = learning_rate_1, momentum = momentum, nesterov = True)
     vae.compile(optimizer = sgd, metrics = ['accuracy'])
 
-    #plot_model(vae, to_file = 'vae.pdf', show_shapes = True)
+    plot_model(vae, to_file = 'vae.pdf', show_shapes = True)
 
     data_train = binvox_IO.voxelpath2matrix('./dataset/03001627_train')
 
@@ -78,4 +96,4 @@ if __name__ == '__main__':
         callbacks = [LearningRateScheduler(learning_rate_scheduler)]
     )
 
-    vae.save_weights('vae_binvox.h5')
+    vae.save_weights('./weights.h5')

@@ -38,8 +38,8 @@ if __name__ == '__main__':
     vae = model['vae']
 
     # Set the weight files and test dataset path
-    vae.load_weights('/home/zmy/TrainingData/tf1.x.keras/vae_binvox_train_kl.h5')
-    data_test, hash = binvox_IO.voxelpath2matrix('./dataset/03001627_test_1')
+    vae.load_weights('./weights.h5')
+    data_test, hash = binvox_IO.voxelpath2matrix('./dataset/03001627_test_img')
 
     reconstructions = vae.predict(data_test)
     reconstructions[reconstructions > 0] = 1
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     # save the original test dataset file
     for i in range(reconstructions.shape[0]):
-        shutil.copy2('/home/zmy/Datasets/03001627_test_1/'+hash[i]+'.binvox', test_result_path)
+        shutil.copy2('./dataset/03001627_test_img/'+hash[i]+'.binvox', test_result_path)
         data_test[data_test > 0] = 1
         data_test[data_test < 0] = 0
         if save_the_img:
